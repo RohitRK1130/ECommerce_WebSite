@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+   <head>
+      <!-- Basic -->
+      <meta charset="utf-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <!-- Mobile Metas -->
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+      <!-- Site Metas -->
+      <meta name="keywords" content="" />
+      <meta name="description" content="" />
+      <meta name="author" content="" />
+      <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="">
+      <title>Famms - Fashion HTML Template</title>
+      <!-- bootstrap core css -->
+      <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" />
+      <!-- font awesome style -->
+      <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" />
+      <!-- Custom styles for this template -->
+      <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+      <!-- responsive style -->
+      <link href="{% static 'css/responsive.css' %}" rel="stylesheet" />
+
+      <script type="text/javascript">
+         var user = '{{request.user}}'
+         function gettoken(name) {
+         let cookieValue = null;
+         if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+                  // Does this cookie string begin with the name we want?
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                     break;
+                  }
+            }
+         }
+            return cookieValue;
+         }
+         const csrftoken = gettoken('csrftoken');
+
+         function getCookie(name) {
+            var cookieArr = document.cookie.split(";");
+            for(var i=0; i<cookieArr.length; i++){
+               var cookiePair = cookieArr[i].split("=");
+               if(name == cookiePair[0].trim()){
+                     return decodeURIComponent(cookiePair[1]);
+               }
+            }
+            return null;
+         }
+
+         var cart = JSON.parse(getCookie('cart'))
+
+         if (cart == undefined) {
+            cart = {}
+            console.log("cart created!",cart)
+            document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+         }
+
+         console.log('Cart:',cart)
+      </script>
+   </head>
+        {% block content %}
+        {% endblock content %}
+      <!-- jQery -->
+      <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+      <!-- popper js -->
+      <script src="{% static 'js/popper.min.js' %}"></script>
+      <!-- bootstrap js -->
+      <script src="{% static 'js/bootstrap.js' %}"></script>
+      <!-- custom js -->
+      <script src="{% static 'js/custom.js' %}"></script>
+
+      
+   </body>
+</html>
