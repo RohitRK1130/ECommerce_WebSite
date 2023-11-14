@@ -1,0 +1,35 @@
+{% extends 'store/base_sub_page.html' %}
+
+{% load static %}
+{% block subcontent %}
+
+<div class="hero_area">
+    <!-- header section strats -->
+    <header class="header_section">
+    <div class="container">
+        {% include "store/navbar.html" %} 
+    </div>
+    </header>
+    <!-- end header section -->
+
+    <div class="container" id="checkout-container">
+        <div class="card" id="checkout-card">
+        <div class="row">
+            <div class="col-75">
+
+                {{response}}
+                <div class="col my-4">
+            
+                    <h2>Payment status regarding your order Id {{response.ORDERID}}</h2>
+                    {% if response.RESPCODE == '01' %}
+                    ORDER SUCCESS
+                    {% else %}
+                    ORDER FAILURE
+                    {% endif%}
+            
+                </div>
+                
+            </div>
+        </div>
+    </div>
+{% endblock subcontent %}

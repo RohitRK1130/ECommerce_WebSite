@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 
 from . import views
 
@@ -14,6 +14,5 @@ urlpatterns = [
 
     path('update_item/', views.updateItem, name="update_item"),
     path('process_order/', views.processOrder, name="process_order"),
-
-    path('', include('paypal.standard.ipn.urls')),
+    path('razorpay-success/', views.razorpaySuccess, name="razorpaySuccess"),
 ]

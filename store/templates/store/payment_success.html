@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+    <p>Payment successful... You will be redirected in <span id="countdown">5</span> seconds.</p>
+
+    <script>
+        let countdown = 5;
+
+        function updateCountdown() {
+            document.getElementById('countdown').textContent = countdown--;
+
+            if (countdown < 0) {
+                cart = {}
+                document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+                window.location.href = "/"; 
+            } else {
+                setTimeout(updateCountdown, 1000);
+            }
+        }
+
+        updateCountdown();
+    </script>
+
+</body>
+</html>
