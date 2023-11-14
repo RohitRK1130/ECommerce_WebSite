@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,9 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'store.apps.StoreConfig',
-    'paypal.standard.ipn',
-
+    'store.apps.StoreConfig'
 ]
 
 MIDDLEWARE = [
@@ -135,5 +134,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'files/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-PAYPAL_RECEIVER_EMAIL = ''
-PAYPAL_TEST = True
+# PAYTM PAYMENT INT
+PAYTM_MID = config('PAYTM_MID')
+PAYTM_MID_KEY = SECRET_KEY[-16::]
+PAYTM_WEBSITE = config('PAYTM_WEBSITE')
+PAYTM_CHANNEL_ID = config('PAYTM_CHANNEL_ID')
+PAYTM_INDUSTRY_TYPE_ID = config('PAYTM_INDUSTRY_TYPE_ID')
+
+
+RAZORPAY_KEY = config('RAZORPAY_KEY')
+RAZORPAY_SECRET = config('RAZORPAY_SECRET')
