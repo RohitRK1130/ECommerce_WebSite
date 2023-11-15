@@ -9,6 +9,11 @@ from paytm.checksum import generateSignature,verifySignature
 import razorpay
 from django.shortcuts import HttpResponseRedirect, redirect, render
 
+import logging
+import sys
+logger = logging.getLogger(__name__)
+
+
 
 def index(request):
 	data = cartData(request)
@@ -104,46 +109,56 @@ def updateItem(request):
 
 @csrf_exempt
 def processOrder(request):
-	transaction_id = datetime.datetime.now().timestamp()
-	data = json.loads(request.body.decode('utf-8'))
+	try:
+		transaction_id = datetime.datetime.now().timestamp()
+		data = json.loads(request.body.decode('utf-8'))
 
-	if request.user.is_authenticated: 
-		customer = request.user.customer
-		order, ordercreated = Order.objects.get_or_create(customer=customer, complete =False)
-	else:
-		order, customer = guestOrder(request, data)
-	total = float(data['form']['total'])
-	order.transaction_id = transaction_id
+		if request.user.is_authenticated: 
+			customer = request.user.customer
+			order, ordercreated = Order.objects.get_or_create(customer=customer, complete =False)
+		else:
+			order, customer = guestOrder(request, data)
+		total = float(data['form']['total'])
+		order.transaction_id = transaction_id
 
-	if str(total) == str(order.get_cart_total()):
-		if order.shipping() == True:
-			ShippingAddress.objects.create(
-				customer=customer,
-				order=order,
-				name=customer.name,
-				address=data['shipping']['address'],
-				city=data['shipping']['city'],
-				state=data['shipping']['state'],
-				zipcode=data['shipping']['zip'],
-			)
+		logger.info("ProcessOrder If Check %s ==  %s",str(total), str(order.get_cart_total()))
 
-		# razorpay getway
-		client = razorpay.Client(auth=(settings.RAZORPAY_KEY, settings.RAZORPAY_SECRET))
-		payment = client.order.create({
-			'amount': int(order.get_cart_total()) * 100,
-			'currency': 'INR',
-			'payment_capture' : 1
-			})
-		
-		payment['status'] = 'success'
-		order.razorpay_order_id = payment['id']
-		order.save()
-		return JsonResponse(payment, safe=False)
+		if str(total) == str(order.get_cart_total()):
+			if order.shipping() == True:
+				ShippingAddress.objects.create(
+					customer=customer,
+					order=order,
+					name=customer.name,
+					address=data['shipping']['address'],
+					city=data['shipping']['city'],
+					state=data['shipping']['state'],
+					zipcode=data['shipping']['zip'],
+				)
 
-	data = {}
-	data['status'] = "fail"
-	return JsonResponse(data,safe=False)
+			# razorpay getway
+			client = razorpay.Client(auth=(settings.RAZORPAY_KEY, settings.RAZORPAY_SECRET))
+			payment = client.order.create({
+				'amount': int(order.get_cart_total()) * 100,
+				'currency': 'INR',
+				'payment_capture' : 1
+				})
+			
+			payment['status'] = 'success'
+			order.razorpay_order_id = payment['id']
+			order.save()
+			return JsonResponse(payment, safe=False)
 
+		data = {}
+		data['status'] = "fail"
+		return JsonResponse(data,safe=False)
+
+	except Exception as e:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		logger.error("ProcessOrder Error %s at %s",str(e), str(exc_tb.tb_lineno))
+		data = {}
+		data['status'] = "fail"
+		return JsonResponse(data,safe=False)
+	
 
 @csrf_exempt
 def razorpaySuccess(request):

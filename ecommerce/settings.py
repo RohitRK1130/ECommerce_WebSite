@@ -146,3 +146,109 @@ PAYTM_INDUSTRY_TYPE_ID = config('PAYTM_INDUSTRY_TYPE_ID')
 
 RAZORPAY_KEY = config('RAZORPAY_KEY')
 RAZORPAY_SECRET = config('RAZORPAY_SECRET')
+
+
+#Logging
+
+if not os.path.exists('./log'):
+    os.makedirs('./log')
+
+APP_LOG_FILENAME = os.path.join(BASE_DIR, './log/app.log')
+
+ERROR_LOG_FILENAME = os.path.join(BASE_DIR, './log/error.log')
+
+SENSITIVE_LOG_FILENAME = os.path.join(BASE_DIR, './log/sensitive.log')
+
+LOGFILE_APP = 'api'
+
+LOGFILE_SIZE = 20 * 1024 * 1024
+
+LOGFILE_COUNT = 5
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': "[%(asctime)s] %(levelname)s [%(filename)s:%(lineno)s] %(message)s",
+            'datefmt': "%d-%b-%Y %H:%M:%S"
+        }
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        },
+    
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler'
+        },
+        'mail_admins': {
+            'level': 'INFO',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'api_applog': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': APP_LOG_FILENAME,
+            'maxBytes': LOGFILE_SIZE,
+            'backupCount': LOGFILE_COUNT,
+            'formatter': 'standard',
+        },
+        'api_errorlog': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': ERROR_LOG_FILENAME,
+            'maxBytes': LOGFILE_SIZE,
+            'backupCount': LOGFILE_COUNT,
+            'formatter': 'standard',
+        },
+        'api_sensitivelog': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': SENSITIVE_LOG_FILENAME,
+            'maxBytes': LOGFILE_SIZE,
+            'backupCount': LOGFILE_COUNT,
+            'formatter': 'standard',
+        },
+        'applog': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': APP_LOG_FILENAME,
+            'maxBytes': LOGFILE_SIZE,
+            'backupCount': LOGFILE_COUNT,
+            'formatter': 'standard',
+        },
+        'errorlog': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': ERROR_LOG_FILENAME,
+            'maxBytes': LOGFILE_SIZE,
+            'backupCount': LOGFILE_COUNT,
+            'formatter': 'standard',
+        },
+        'sensitivelog': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': SENSITIVE_LOG_FILENAME,
+            'maxBytes': LOGFILE_SIZE,
+            'backupCount': LOGFILE_COUNT,
+            'formatter': 'standard',
+        }
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        LOGFILE_APP: {
+            'handlers': ['api_applog', 'api_errorlog', 'api_sensitivelog'],
+            'level': 'INFO',
+            'propagate': True,
+        }
+    }
+}
