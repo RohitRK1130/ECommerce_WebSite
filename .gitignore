@@ -9,3 +9,4 @@ google-ldap.conf
 !**/migrations
 !**/migrations/__init__.py
 files/*
+static/*
