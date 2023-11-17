@@ -123,7 +123,8 @@ def processOrder(request):
 
 		logger.info("ProcessOrder If Check %s ==  %s",str(total), str(order.get_cart_total()))
 
-		if str(total) == str(order.get_cart_total()):
+		if float(total) == float(order.get_cart_total()):
+			logger.info("ProcessOrder Inside if")
 			if order.shipping() == True:
 				ShippingAddress.objects.create(
 					customer=customer,

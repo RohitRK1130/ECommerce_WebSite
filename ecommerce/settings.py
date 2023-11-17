@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-b+gpzx!n#)f@x%sg9lqn@rrfzc_ikk=347p2o5b^*u71949!uy
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['13.126.5.110']
+ALLOWED_HOSTS = ['13.126.5.110','127.0.0.1']
 
 
 # Application definition
@@ -122,11 +122,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+if not DEBUG:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-#STATICFILES_DIRS = [
-#    os.path.join(BASE_DIR, 'static')
-#]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'files/')
 
@@ -159,7 +158,7 @@ ERROR_LOG_FILENAME = os.path.join(BASE_DIR, './log/error.log')
 
 SENSITIVE_LOG_FILENAME = os.path.join(BASE_DIR, './log/sensitive.log')
 
-LOGFILE_APP = 'api'
+LOGFILE_APP = 'store'
 
 LOGFILE_SIZE = 20 * 1024 * 1024
 
@@ -190,7 +189,7 @@ LOGGING = {
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
         },
-        'api_applog': {
+        'store_applog': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': APP_LOG_FILENAME,
@@ -198,7 +197,7 @@ LOGGING = {
             'backupCount': LOGFILE_COUNT,
             'formatter': 'standard',
         },
-        'api_errorlog': {
+        'store_errorlog': {
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': ERROR_LOG_FILENAME,
@@ -206,7 +205,7 @@ LOGGING = {
             'backupCount': LOGFILE_COUNT,
             'formatter': 'standard',
         },
-        'api_sensitivelog': {
+        'store_sensitivelog': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': SENSITIVE_LOG_FILENAME,
@@ -246,7 +245,7 @@ LOGGING = {
             'propagate': True,
         },
         LOGFILE_APP: {
-            'handlers': ['api_applog', 'api_errorlog', 'api_sensitivelog'],
+            'handlers': ['store_applog', 'store_errorlog', 'store_sensitivelog'],
             'level': 'INFO',
             'propagate': True,
         }
