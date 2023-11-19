@@ -117,8 +117,6 @@ a:focus {
 
 .sub_page .hero_area {
   min-height: auto;
-  -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.25);
-          box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.25);
 }
 
 .header_section {
@@ -162,7 +160,7 @@ a:focus {
 .custom_nav-container .navbar-nav .nav-item .nav-link svg {
   width: 17px;
   height: auto;
-  fill: #000000;
+  /* fill: #000000; */
   margin-bottom: 2px;
 }
 
@@ -1133,7 +1131,7 @@ form input[type="submit"]:focus {
     }
 }
 .cart{
-    background-color: #fff;
+    /* background-color: #fff; */
     padding: 4vh 5vh;
     border-bottom-left-radius: 1rem;
     border-top-left-radius: 1rem;
@@ -1283,7 +1281,7 @@ a:hover{
   padding: 0 16px;
 }
 
-#checkoutdetails-container {
+.checkoutdetails {
   background-color: #f2f2f2;
   padding: 30px;
   border: 1px solid lightgrey;
@@ -1319,6 +1317,7 @@ label {
   border-radius: 3px;
   cursor: pointer;
   font-size: 17px;
+  border-radius: 50px;
 }
 
 .btn:hover {
@@ -1371,4 +1370,40 @@ span.price {
 
 .hidden{
   display: none !important;
+}
+
+#rzp-button1{
+  width: 50%;
+}
+
+#payment-info{
+  text-align: center;
+}
+
+.logincenter {
+  text-align: center;
+}
+
+.loginnavbar {
+  display: inline-block;
+}
+
+.btn-login {
+  font-size: 0.9rem;
+  letter-spacing: 0.05rem;
+  padding: 0.75rem 1rem;
+}
+
+.btn-google {
+  color: white !important;
+  background-color: #ea4335;
+}
+
+.btn-facebook {
+  color: white !important;
+  background-color: #3b5998;
+}
+
+.h5-login{
+  margin-top: 0px !important; 
 }

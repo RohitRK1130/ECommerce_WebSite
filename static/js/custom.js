@@ -82,3 +82,117 @@ function updateUserOrder(productId, action) {
         location.reload()
     })
 }
+
+try {
+    if (ORDER_SHIPPING == 'False') {
+        document.getElementById("user-address").innerHTML = ''
+    }
+    
+    if (user != 'AnonymousUser') {
+        document.getElementById("user-info").innerHTML = ''
+    }
+    
+    if (ORDER_SHIPPING == 'False' && user != 'AnonymousUser') {
+        document.getElementById('form-submit').classList.add('hidden')
+        document.getElementById('payment-info').classList.remove('hidden')
+    }
+    
+    var form = document.getElementById('form')
+    
+    form.addEventListener('submit', function(e){
+        e.preventDefault()
+        document.getElementById('form').classList.add('hidden')
+        document.getElementById('form-submit').classList.add('hidden')
+        document.getElementById('payment-info').classList.remove('hidden')
+        document.getElementById('summary-block').classList.add('hidden')
+    })
+    
+    var makepayment = document.getElementById('form-submit')
+    
+    makepayment.addEventListener('click', function(e) {
+        submitFormData()
+    })
+    
+    function submitFormData(params) {
+        console.log("Payment Done")
+        var userFormData = {
+            'fname': null,
+            'email': null,
+            'total': ORDER_TOTAL,
+        }
+    
+        var shippingInfo = {
+            'address': null,
+            'city': null,
+            'state': null,
+            'zip': null,
+        }
+    
+        if (ORDER_SHIPPING != 'False') {
+            shippingInfo.address = form.address.value
+            shippingInfo.city = form.city.value
+            shippingInfo.state = form.state.value
+            shippingInfo.zip = form.zip.value
+        }
+    
+        if (user == 'AnonymousUser') {
+            userFormData.fname = form.fname.value
+            userFormData.email = form.email.value
+        }
+    
+        // Make an AJAX request to your Django view
+        $.ajax({
+            url: "/process_order/",
+            method: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify({'form':userFormData, 'shipping':shippingInfo}),
+            success: function (response) {
+                
+                if (response['status'] == "success") {
+    
+                    var options = {
+                            "key": "rzp_test_q03yAzvCR5hPJp",
+                            "amount": response['amount'],
+                            "currency": "INR",
+                            "order_id": response['id'],
+                            "name": "EComm",
+                            "description": "Purchases",
+                            "image": "http://127.0.0.1:8000/static/images/logo.png",
+                            "handler": function(response) {
+                                window.location.href = `/razorpay-success/?razorpay_order_id=${response.razorpay_order_id}`
+                            },
+                            "theme": {
+                            "color": "#F37254"
+                            }
+                        };
+                
+                    var rzp1 = new Razorpay(options);
+                    document.getElementById('rzp-button1').onclick = function(e) {
+                    rzp1.open();
+                    e.preventDefault();
+                    }
+    
+                } else {
+                    alert("Something went wrong. Please try again after some time...")
+                    window.location.href = "/"
+                }
+    
+            },
+        });
+    }
+} catch (error) {
+    console.log(error)
+}
+
+
+// Client-side validation using JavaScript
+document.querySelector('#signupform').addEventListener('submit', function (event) {
+    const password = document.querySelector('[name="password"]').value;
+    const confirmPassword = document.querySelector('[name="confirm_password"]').value;
+
+    if (password !== confirmPassword) {
+        alert('Password and Confirm Password do not match.');
+        event.preventDefault(); // Prevent form submission
+    }
+});

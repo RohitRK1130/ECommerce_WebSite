@@ -10,13 +10,13 @@
           <li class="nav-item">
              <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
           </li>
-          <li class="nav-item dropdown active">
+          <!-- <li class="nav-item dropdown active">
              <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true"> <span class="nav-label">Pages <span class="caret"></span></a>
              <ul class="dropdown-menu">
                 <li><a href="{% url 'about' %}">About</a></li>
                 <li><a href="{% url 'testimonial' %}">Testimonial</a></li>
              </ul>
-          </li>
+          </li> -->
           <li class="nav-item">
              <a class="nav-link" href="{% url 'product' %}">Products</a>
           </li>
@@ -26,8 +26,21 @@
           <li class="nav-item">
              <a class="nav-link" href="{% url 'contact' %}">Contact</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/cart/">
+          {% if user.is_authenticated %}
+            <li class="nav-item dropdown active">
+               <a class="nav-link dropdown-toggle" href="/" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true"> <span class="nav-label">Welcome, {{ user.username }}!<span class="caret"></span></a>
+               <ul class="dropdown-menu">
+                  <li><a href="{% url 'logout' %}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Sign Out</a></li>
+               </ul>
+            </li>
+          {% else %}
+          <li class="nav-item dropdown active">
+            <a class="nav-link" href="{% url 'login' %}">Sign In</a>
+         </li>
+         {% endif %}
+         
+          <li class="nav-item" style="margin-left: -9px">
+            <a class="nav-link" href="/cart/" style="margin-top: 4px;">
                <div class="cart-icon">
                   <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 456.029 456.029" style="enable-background:new 0 0 456.029 456.029;" xml:space="preserve">
                      <g>
@@ -87,10 +100,8 @@
                </div>
             </a>
          </li>
-          <form class="form-inline">
-             <i class="fa fa-search" aria-hidden="true"></i>
-             </button>
-          </form>
+
+
        </ul>
     </div>
 </nav>

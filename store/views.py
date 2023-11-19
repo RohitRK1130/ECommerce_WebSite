@@ -8,6 +8,7 @@ from django.conf import settings
 from paytm.checksum import generateSignature,verifySignature
 import razorpay
 from django.shortcuts import HttpResponseRedirect, redirect, render
+from django.contrib.auth import authenticate, login, logout
 
 import logging
 import sys
@@ -172,3 +173,38 @@ def razorpaySuccess(request):
 		return render(request, 'store/payment_success.html', context)
 		return HttpResponse("Payment Success..")
 		
+#  login 
+
+def logout_view(request):
+	logout(request)
+	return redirect('/')
+
+@csrf_exempt
+def signup_view(request):
+	if request.method == 'POST':
+		name = request.POST['name']
+		numberoremail_ = request.POST['numberoremail']
+		password = request.POST['password']
+
+		# Check if the username already exists
+		if User.objects.filter(username=numberoremail_).exists():
+			error_message = 'Email already exists. Please choose a different one.'
+			return render(request, 'store/signup.html', {'error_message': error_message})
+
+		user = User.objects.create_user(username=numberoremail_, password=password)
+		Customer.objects.create(user=user,name=name,email=numberoremail_)
+		login(request, user)
+		return redirect('/')  
+		
+	return render(request, 'store/signup.html')
+
+@csrf_exempt
+def login_view(request):
+	if request.method == 'POST':
+		username_ = request.POST['username']
+		password = request.POST['password']
+		user = authenticate(request, username=username_, password=password)
+		if user is not None:
+			login(request, user)
+			return redirect('/')  
+	return render(request, 'store/login.html')

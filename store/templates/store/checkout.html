@@ -16,7 +16,7 @@
         <div class="card" id="checkout-card">
         <div class="row">
             <div class="col-75">
-                <div class="container" id="checkoutdetails-container">
+                <div class="container checkoutdetails">
                     <form id="form">
                         <div class="row">
                             <div class="col-50">
@@ -63,8 +63,8 @@
                 </div>
 
                 </div>
-                <div class="col-25">
-                <div class="container" id="checkoutdetails-container">
+                <div class="col-25" id="summary-block">
+                <div class="container checkoutdetails">
                     <h4>Cart
                     <span class="price" style="color:black">
                         <i class="fa fa-shopping-cart"></i>
@@ -84,106 +84,8 @@
     </div>
 
     <script src = "https://checkout.razorpay.com/v1/checkout.js"></script>
-    
-    <script>
-        var shipping = '{{order.shipping}}'
-        if (shipping == 'False') {
-            document.getElementById("user-address").innerHTML = ''
-        }
-
-        if (user != 'AnonymousUser') {
-            document.getElementById("user-info").innerHTML = ''
-        }
-
-        if (shipping == 'False' && user != 'AnonymousUser') {
-            document.getElementById('form-submit').classList.add('hidden')
-            document.getElementById('payment-info').classList.remove('hidden')
-        }
-
-        var form = document.getElementById('form')
-
-        form.addEventListener('submit', function(e){
-            e.preventDefault()
-            document.getElementById('form').classList.add('hidden')
-            document.getElementById('form-submit').classList.add('hidden')
-            document.getElementById('payment-info').classList.remove('hidden')
-        })
-
-        var makepayment = document.getElementById('form-submit')
-        
-        makepayment.addEventListener('click', function(e) {
-            submitFormData()
-        })
-
-        var total = '{{order.get_cart_total|floatformat:2}}'
-
-        function submitFormData(params) {
-            console.log("Payment Done")
-            var userFormData = {
-                'fname': null,
-                'email': null,
-                'total': total,
-            }
-
-            var shippingInfo = {
-                'address': null,
-                'city': null,
-                'state': null,
-                'zip': null,
-            }
-
-            if (shipping != 'False') {
-                shippingInfo.address = form.address.value
-                shippingInfo.city = form.city.value
-                shippingInfo.state = form.state.value
-                shippingInfo.zip = form.zip.value
-            }
-
-            if (user == 'AnonymousUser') {
-                userFormData.fname = form.fname.value
-                userFormData.email = form.email.value
-            }
-
-            // Make an AJAX request to your Django view
-            $.ajax({
-                url: "/process_order/",
-                method: "POST",
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                data: JSON.stringify({'form':userFormData, 'shipping':shippingInfo}),
-                success: function (response) {
-                    
-                    if (response['status'] == "success") {
-
-                        var options = {
-                                "key": "rzp_test_q03yAzvCR5hPJp",
-                                "amount": response['amount'],
-                                "currency": "INR",
-                                "order_id": response['id'],
-                                "name": "EComm",
-                                "description": "Purchases",
-                                "image": "http://127.0.0.1:8000/static/images/logo.png",
-                                "handler": function(response) {
-                                    window.location.href = `/razorpay-success/?razorpay_order_id=${response.razorpay_order_id}`
-                                },
-                                "theme": {
-                                "color": "#F37254"
-                                }
-                            };
-                    
-                        var rzp1 = new Razorpay(options);
-                        document.getElementById('rzp-button1').onclick = function(e) {
-                        rzp1.open();
-                        e.preventDefault();
-                        }
-
-                    } else {
-                        alert("Something went wrong. Please try again after some time...")
-                        window.location.href = "/"
-                    }
-
-                },
-            });
-        }
+    <script type="text/javascript">
+        window.ORDER_SHIPPING = '{{order.shipping}}';
+        window.ORDER_TOTAL = '{{order.get_cart_total|floatformat:2}}';
     </script>
 {% endblock subcontent %}
